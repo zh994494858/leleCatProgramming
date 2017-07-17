@@ -1,0 +1,18 @@
+
+<%@ tag description="账户功能菜单项" pageEncoding="UTF-8" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ attribute name="value" description="菜单项对象" type="cc.lelecat.tag.menu.Item" required="true" %>
+<%@ attribute name="last" %>
+<%@ attribute name="ctx"%>
+
+
+<li ${last != null ? "class='last'" : ""}>
+	<a href="${ctx}${value.url}">
+		<i class="${value.icon}"></i>
+		${value.name}
+	</a>
+</li>
+
+<%-- ACat i lele --%>

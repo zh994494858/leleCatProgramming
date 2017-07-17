@@ -1,0 +1,114 @@
+package cc.lelecat.school.lesson.chapter.dao;
+
+
+import cc.lelecat.entity.school.lesson.Course;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import org.springframework.stereotype.Repository;
+import cc.lelecat.framework.BaseDao;
+import cc.lelecat.entity.school.lesson.Chapter;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+/*查询方法需要知道根据什么查，目前是按名字查改的*/
+
+/**
+ * Created by 张欢 on 2016/11/15.
+ */
+@Repository
+public class ChapterDaoImpl extends BaseDao<Chapter, Integer> {
+
+	@Resource
+	private SessionFactory sessionFactory;
+
+	public void saveChapter(Chapter p) {
+		try {
+			this.save(p);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Course findCourseBycourseId(int courseId) {
+		List list1 = null;
+		Session session = this.sessionFactory.openSession();
+		List list2 = session.createQuery("from Course c where c.courseId=" + courseId).list();
+		if (list2.size() != 0) {
+			return (Course) list2.get(0);
+		} else {
+			return null;
+		}
+	}
+
+//    public Page<Chapter> findChaptersByCourseId(int pageNum, int pageSize,Object[] params){
+//        String hql;
+//        if(params!=null && params.length>0){
+//            hql="from Chapter p where p.chapterName like ?";
+//            params[0]="%"+params[0]+"%";
+//
+//        }else{
+//            hql="from Chapter";
+//        }
+//        try {
+//            Page<Chapter> page=new Page<Chapter>();
+//            page.setCurrentPageNum(pageNum);
+//            page.setPageSize(pageSize);
+//            page=this.findByPage(pageNum, pageSize, hql, params);
+//            return page;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
+	public List<Chapter> findChaptersByCourseId(int courseId) {
+		try {
+			return this.findByProperty(
+				"select chapter " +
+					"from Chapter chapter, Course course " +
+					"where chapter.course=course and course.courseId=? " +
+					"order by chapter.chapterIndex asc",
+				new Object[]{courseId});
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+
+	public String findCourseName(int courseId) {
+		Session session = this.sessionFactory.openSession();
+		List<Course> list = session.createQuery("from Course c where c.courseId=" + courseId).list();
+		String name = list.get(0).getCourseName();
+		return name;
+	}
+
+	public Chapter getChapter(int chapterId) {
+		try {
+			Chapter p = this.get(chapterId);
+			return p;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void updateChapter(Chapter p) {
+		try {
+			this.update(p);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteChapter(int chapterId) {
+		try {
+			this.delete(chapterId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

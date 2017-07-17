@@ -1,0 +1,146 @@
+package cc.lelecat.account.worker.controller;
+
+import cc.lelecat.account.worker.service.AccountService;
+import cc.lelecat.account.worker.service.PowerService;
+import cc.lelecat.entity.account.worker.Account;
+import cc.lelecat.tag.menu.Item;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 类名：LoginController
+ * 功能：实现登录验证身份系列
+ * 作者：苗怀雨
+ * 日期：2016-11-10 10:45:06
+ */
+
+@Controller
+@RequestMapping("admin/login")
+public class LoginController {
+    final private String CONTENT_URL = "/admin/course/list";
+
+    final private String CUSTOMER_ACCOUNT_MANAGE = "/admin/account/normal-account/manage-page";
+    final private String WORKER_ACCOUNT_MANAGE = "/admin/account/worker-account/manage-page";
+    final private String ROLE_MANAGE = "/admin/account/role/manage-page";
+    final private String COURSE_MANAGE = "/admin/course/list";
+
+//    final private String WRITE_EMAIL = "#";
+//    final private String WRITE_PUSH_INFO = "#";
+//    final private String USER_CONFIG = "#";
+//    final private String USER_INFO = "#";
+//    final private String LOCK = "#";
+    final private String SIGNOUT = "/admin/login/logout";
+
+    @Resource
+    private AccountService accountService;
+    @Resource
+    private PowerService powerService;
+
+    @RequestMapping("logout")
+    public String logout(
+            HttpSession session
+    ) {
+        session.invalidate();
+        return "redirect:/admin/login.jsp";
+    }
+
+    /*controller:用户点击登录，验证用户名和密码*/
+    @RequestMapping("check")
+    public String checkUser(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password,
+            HttpServletRequest request,
+            HttpSession session) {
+
+        Account account = this.accountService.login(username, password);
+        if (account != null) {
+
+            boolean customerAccountManagePower = this.powerService.hasCustomerAccountManagePower(account.getRole());
+            boolean workerAccountManagePower = this.powerService.hasWorkerAccountManagePower(account.getRole());
+            boolean roleManagePower = this.powerService.hasRoleManagePower(account.getRole());
+
+            // 菜单列表
+            List<Item> menuList = new ArrayList<>();
+            Item item;
+            item = new Item("课程内容", COURSE_MANAGE, "fa-graduation-cap");
+            menuList.add(item);
+//            item = new Item("用户反馈", "", "fa-twitch");
+//            item.setRemind(3);
+//            menuList.add(item);
+            if (customerAccountManagePower || workerAccountManagePower || roleManagePower) {
+                item = new Item("高级管理");
+                item.setIcon("fa-twitch");
+                menuList.add(item);
+
+                if (customerAccountManagePower) {
+                    item = new Item("客户账户管理", CUSTOMER_ACCOUNT_MANAGE);
+                    item.setLevel(1);
+                    menuList.add(item);
+                }
+                if (workerAccountManagePower) {
+                    item = new Item("工作账户管理", WORKER_ACCOUNT_MANAGE);
+                    item.setLevel(1);
+                    menuList.add(item);
+                }
+                if (roleManagePower) {
+                    item = new Item("角色管理", ROLE_MANAGE);
+                    item.setLevel(1);
+                    menuList.add(item);
+                }
+
+            }
+
+
+            // 账户功能菜单
+            // 用户功能菜单项参数对象示例代码	user-menu[functions]
+            List<Item> functions = new ArrayList<>();
+
+//            item = new Item("写邮件", WRITE_EMAIL);
+//            item.setIcon("fa-envelope-o");
+//            functions.add(item);
+//
+//            item = new Item("写通知", WRITE_PUSH_INFO);
+//            item.setIcon("fa-bell-o");
+//            functions.add(item);
+//
+//            item = new Item("设置", USER_CONFIG);
+//            item.setIcon("fa-wrench");
+//            functions.add(item);
+//
+//            item = new Item("账户信息", USER_INFO);
+//            item.setIcon("fa-user");
+//            functions.add(item);
+//
+//            item = new Item("锁定账户", LOCK);
+//            item.setIcon("fa-unlock-alt");
+//            functions.add(item);
+
+            item = new Item("登出", SIGNOUT);
+            item.setIcon("fa-sign-out");
+            functions.add(item);
+
+            // 写入session的数据
+            // 账户
+            session.setAttribute("account", account);
+            // 将菜单添加到session
+            session.setAttribute("menu-list", menuList);
+            // 将账户功能菜单添加到session
+            session.setAttribute("function-list", functions);
+
+            // 内容页面URL
+            request.setAttribute("content-url", CONTENT_URL);
+
+            return "/admin/index";
+        }else{
+            session.setAttribute("error", "用户名或密码错误, 请重新输入!");
+            return "redirect:/admin/login.jsp";
+        }
+    }
+}

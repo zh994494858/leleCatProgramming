@@ -1,0 +1,87 @@
+<%@ tag description="左侧显示功能菜单" pageEncoding="UTF-8" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="mytags" tagdir="/WEB-INF/tags/admin/ui/fun-menu" %>
+
+
+<!--
+	功能关系映射
+	type: List<Item>
+
+	Item
+		- level	功能菜单项级别
+		|	0 一级菜单项
+		|	1 上一级的二级菜单项
+		|	2 上一级的三级菜单项
+		|	... 以此类推
+		- name 功能菜单项名称
+-->
+<%@ attribute name="items" description="功能关系映射" type="java.util.List" required="true" %>
+<%@ attribute name="ctx" description="ctx" type="java.lang.String"%>
+
+
+
+<!-- start: 左侧功能功能菜单栏 -->
+<div class="sidebar-menu toggle-others fixed">
+	<div class="sidebar-menu-inner">
+
+		<!-- start: 左侧功能菜单栏顶部标题部分 -->
+		<header class="logo-env">
+
+			<!-- start: Logo -->
+			<div class="logo">
+				<a href="#" class="logo-expanded">
+					<img src="${ctx}/admin/logo.png" width="80" alt="" />
+				</a>
+				<a href="#" class="logo-collapsed">
+					<img src="${ctx}/admin/logo.png" width="40" alt="" />
+				</a>
+			</div>
+			<!-- end: Logo -->
+
+		</header>
+		<!-- end: 左侧功能菜单栏顶部标题部分 -->
+
+		<!-- start: 左侧功能菜单栏选项列表 -->
+		<ul id="main-menu" class="main-menu">
+
+
+			<c:set var="itemLength" value="${items.size()}" target="int"/>
+
+			<c:forEach var="index" begin="0" end="${itemLength}">
+
+				<c:set var="prevLevel" value="${index > 0 ? items[index - 1].level : 0}" target="int"/>
+				<c:set var="currLevel" value="${items[index].level}" target="int"/>
+				<c:set var="nextLevel" value="${index < items.size() - 1 ? items[index + 1].level : 0}" target="int"/>
+
+
+				<c:choose>
+					<c:when test="${currLevel == nextLevel}">
+						<!-- 当前菜单项和下一菜单项同级 -->
+						<li><mytags:item value="${items[index]}" ctx="${ctx}"/></li>
+					</c:when>
+					<c:when test="${currLevel < nextLevel}">
+						<!-- 当前菜单项为下一菜单项的父项 -->
+						<li>
+							<mytags:item value="${items[index]}" ctx="${ctx}"/>
+							<ul>
+					</c:when>
+					<c:otherwise>
+						<!-- 当前菜单项为同级子菜单项的结尾项 -->
+						<li><mytags:item value="${items[index]}" ctx="${ctx}"/></li>
+						<c:forEach var="i" begin="${nextLevel}" end="${currLevel}">
+							</ul>
+							</li>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+
+			</c:forEach>
+
+		</ul>
+		<!-- end: 左侧功能菜单栏选项列表 -->
+	</div>
+</div>
+<!-- end: 左侧菜单栏 -->
+
+<%-- ACat i lele --%>

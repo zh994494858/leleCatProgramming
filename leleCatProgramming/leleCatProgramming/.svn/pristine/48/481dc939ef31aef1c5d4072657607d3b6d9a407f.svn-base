@@ -1,0 +1,89 @@
+package cc.lelecat.school.lesson.course.service;
+
+import javax.annotation.Resource;
+
+import cc.lelecat.account.worker.dao.PowerDao;
+import cc.lelecat.entity.account.worker.OperationType;
+import cc.lelecat.entity.account.worker.Power;
+import cc.lelecat.entity.school.lesson.Course;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import cc.lelecat.school.lesson.course.dao.CourseDaoImpl;
+import cc.lelecat.framework.Page;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * Created by 张欢 on 2016/11/15.
+ */
+@Service
+@Transactional(readOnly=false)
+public class CourseServiceImpl {
+    @Resource
+    private CourseDaoImpl courseDaoImpl;
+    @Resource
+    private PowerDao powerDao;
+
+    public void addCourse(Course course){
+        course.setImgUrl("/admin/data/vw1.jpg");
+        course.setOpenOrNot(true);
+
+        Power power = new Power();
+        power.setType(OperationType.COURSE_MANAGE);
+        power.setName(course.getCourseName() + " 课程管理权限");
+        course.getPowers().add(power);
+
+        power = new Power();
+        power.setType(OperationType.CHAPTER_MANAGE);
+        power.setName(course.getCourseName() + " 章节管理权限");
+        course.getPowers().add(power);
+
+        power = new Power();
+        power.setType(OperationType.TEST_MANAGE);
+        power.setName(course.getCourseName() + " 测试管理权限");
+        course.getPowers().add(power);
+
+        this.courseDaoImpl.saveCourse(course);
+    }
+
+    @Transactional(readOnly=true)
+    public Page<Course> listCourse(int pageNum,int pageSize,Object[] params){
+        return this.courseDaoImpl.findCourse(pageNum, pageSize, params);
+    }
+
+    @Transactional(readOnly=true)
+    public Course getCourse(int courseId){
+        return this.courseDaoImpl.getCourse(courseId);
+    }
+
+    public void editCourse(Course p){
+        Course pdb=this.courseDaoImpl.getCourse(p.getCourseId());
+
+        pdb.setCourseName(p.getCourseName());
+        pdb.setCourseIntroduce(p.getCourseIntroduce());
+        pdb.setOpenOrNot(p.getOpenOrNot());
+        pdb.setEnableAtLab(p.getEnableAtLab());
+        pdb.setClPlugin(p.getClPlugin());
+
+        this.courseDaoImpl.updateCourse(pdb);
+    }
+
+    public void dropCourse(int courseId){
+        this.courseDaoImpl.deleteCourse(courseId);
+    }
+
+    public List<Course> findAll() {
+        try {
+            return this.courseDaoImpl.findByProperty("from Course", new Object[]{});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+
+    }
+
+
+}

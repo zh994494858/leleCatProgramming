@@ -1,0 +1,73 @@
+package cc.lelecat.account.worker.dao;
+
+import cc.lelecat.entity.account.worker.Role;
+import cc.lelecat.framework.BaseDao;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by ACat on 2016/11/27.
+ * ACat i lele.
+ */
+
+@Repository
+public class RoleDaoImpl extends BaseDao<Role, Integer> implements RoleDao {
+
+    @Override
+    public Role get(Integer roleId) {
+        try {
+            return super.get(roleId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Role> findAll() {
+        try {
+            return super.findByProperty("from Role role order by role.disabled", new Object[]{});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<Role> filterAll() {
+        try {
+            return super.findByProperty("from Role role where role.disabled = 0", new Object[]{});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public Role findByName(String name) {
+        try {
+            return super.findOne("from Role role where role.name=?", new Object[]{name});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean delete(Integer roleId) {
+        return super.delete(roleId);
+    }
+
+    @Override
+    public List<Role> findByParentId(Integer id) {
+        try {
+            return super.findByProperty("from Role role, Role parent where role.parent=parent and parent.id=?", new Object[]{id});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+}

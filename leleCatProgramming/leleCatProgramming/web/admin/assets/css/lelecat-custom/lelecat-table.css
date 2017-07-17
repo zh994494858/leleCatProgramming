@@ -1,0 +1,28 @@
+/*
+ * 表格样式
+ *
+ * Created by ACat.
+ * ACat i lele.
+ */
+
+.table-right-opreation-button {
+    float: right;
+    margin-top: -15px;
+}
+.table-right-opreation-button button {
+    margin-bottom: 0;
+}
+.table-text-center {
+    text-align: center;
+}
+.table-text-center .info-column {
+
+    text-align: left;
+}
+.table-text-center .sequence {
+    width: 50px;
+    text-align: center;
+}
+.table-text-center input {
+    margin: 0 !important;
+}

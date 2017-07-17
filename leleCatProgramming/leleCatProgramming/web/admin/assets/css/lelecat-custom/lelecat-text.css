@@ -1,0 +1,13 @@
+/*
+ * 字体颜色
+ *
+ * Created by ACat.
+ * ACat i lele.
+ */
+
+.danger-text {
+    color: #cc3f44 !important;
+}
+.center-text {
+    text-align: center !important;
+}

@@ -1,0 +1,54 @@
+/*
+ * 自定义Tab控件,
+ * 删除和添加按钮居右显示.
+ *
+ * Created by ACat.
+ * ACat i lele.
+ */
+
+/* 横向tag控件去除边线 */
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+    border: 0;
+}
+
+/* 横向tag 右端标签 */
+.right-tag {
+    float: right !important;
+}
+
+.right-tag a {
+    margin-left: 5px !important;
+    margin-right: 0 !important;
+}
+
+/* tag标签-success */
+.tag-success {
+    color: #ffffff !important;
+    background-color: #72a230 !important;
+}
+
+/* tag标签-danger */
+.tag-danger {
+    color: #ffffff !important;
+    background-color: #cc3f44 !important;
+}
+
+/* tag标签-info */
+.tag-info {
+    color: #ffffff !important;
+    background-color: #40bbea !important;
+}
+
+.right-tag.active a,
+.tag-info:hover,
+.tag-info:focus,
+.tag-info:active,
+.tag-success:hover,
+.tag-success:focus,
+.tag-success:active,
+.tag-danger:hover,
+.tag-danger:focus,
+.tag-danger:active {
+    color: #555555 !important;
+    background-color: #ffffff !important;
+}

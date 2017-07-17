@@ -1,0 +1,42 @@
+package cc.lelecat.email.dustbin.dao;
+
+import cc.lelecat.entity.email.Email;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
+
+import javax.annotation.Resource;
+import java.math.BigInteger;
+import java.util.List;
+
+/**
+ * Created by 王冀琛
+ * on 2016/12/2.
+ *标为已读邮件
+ */
+
+@Repository
+public class MarkAsReadDaoImpl {
+
+	@Resource
+	private SessionFactory sessionFactory;
+
+	//修改所有选中的邮件的id的状态，将未读状态改为已读状态
+	public void updateByEmailIds(Integer accountId, BigInteger[]emailIds){
+
+		String sql = "update lelecat.emailbox " +
+				"set emailbox.natureState = '已读' " +
+				"where emailbox.accountId = "+accountId+
+				" AND emailbox.emailId IN(";
+		for(int i = 0;i < emailIds.length;i++){
+			BigInteger param = emailIds[i];
+			if (emailIds.length-1 != i){
+				sql+=param+",";
+			}else {
+				sql += param;
+			}
+		}
+		sql +=")";
+		this.sessionFactory.getCurrentSession ().createSQLQuery (sql).executeUpdate ();
+
+	}
+}

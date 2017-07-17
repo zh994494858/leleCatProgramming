@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="lelecat:Web">
+    <output-path>$PROJECT_DIR$/out/artifacts/lelecat_Web</output-path>
+    <root id="archive" name="lelecat_Web.war">
+      <element id="artifact" artifact-name="lelecat:Web exploded" />
+    </root>
+  </artifact>
+</component>
